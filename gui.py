@@ -1,9 +1,8 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, simpledialog
 from inventory import Inventory
 from sales import Sales
 from reports import Reports
-from tkinter import simpledialog
 
 
 class StoreApp:
@@ -88,13 +87,24 @@ class StoreApp:
         add_button.grid(row=5, columnspan=2, pady=10)
 
     def add_product(self):
-        product_id = self.product_id_entry.get()
-        name = self.name_entry.get()
-        category = self.category_entry.get()
-        price = float(self.price_entry.get())
-        stock = int(self.stock_entry.get())
-        self.inventory.add_product(product_id, name, category, price, stock)
-        self.add_window.destroy()  # Close the window
+        try:
+            product_id = self.product_id_entry.get()
+            name = self.name_entry.get()
+            category = self.category_entry.get()
+            price = float(self.price_entry.get())
+            stock = int(self.stock_entry.get())
+
+            if price <= 0 or stock < 0:
+                raise ValueError("Price must be positive and stock cannot be negative.")
+
+            self.inventory.add_product(product_id, name, category, price, stock)
+            messagebox.showinfo("Success", "Product added successfully.")
+            self.add_window.destroy()  # Close the window
+
+        except ValueError:
+            messagebox.showerror("Invalid Input", "Please enter valid numeric values for price and stock.")
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred: {e}")
 
     def record_sale_window(self):
         # New window for recording a sale
@@ -113,22 +123,66 @@ class StoreApp:
         record_button.grid(row=2, columnspan=2, pady=10)
 
     def record_sale(self):
-        product_id = self.sale_product_id_entry.get()
-        quantity = int(self.sale_quantity_entry.get())
-        self.sales.record_sale(product_id, quantity)
-        self.sale_window.destroy()
+        try:
+            product_id = self.sale_product_id_entry.get()
+            quantity = int(self.sale_quantity_entry.get())
+            
+            if quantity <= 0:
+                raise ValueError("Quantity must be a positive number.")
+            
+            if not self.inventory.product_exists(product_id):
+                raise ValueError("Product ID does not exist.")
+
+            self.sales.record_sale(product_id, quantity)
+            messagebox.showinfo("Success", "Sale recorded successfully.")
+            self.sale_window.destroy()
+
+        except ValueError as ve:
+            messagebox.showerror("Invalid Input", str(ve))
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred: {e}")
 
     def sales_summary_window(self):
-        self.text_area.delete(1.0, tk.END)
-        days = int(tk.simpledialog.askstring("Sales Summary", "Enter number of days:"))
-        self.text_area.insert(tk.END, f"Sales Summary for last {days} days:\n")
-        self.reports.sales_summary(days)
+        try:
+            self.text_area.delete(1.0, tk.END)
+            days_input = simpledialog.askstring("Sales Summary", "Enter number of days:")
+
+            if days_input is None:  # User pressed cancel
+                return
+
+            days = int(days_input)
+
+            if days <= 0:
+                raise ValueError("Number of days must be a positive integer.")
+
+            self.text_area.insert(tk.END, f"Sales Summary for last {days} days:\n")
+            self.reports.sales_summary(days)
+
+        except ValueError:
+            messagebox.showerror("Invalid Input", "Please enter a valid positive integer for days.")
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred: {e}")
 
     def low_stock_window(self):
-        self.text_area.delete(1.0, tk.END)
-        threshold = int(tk.simpledialog.askstring("Low Stock Report", "Enter stock threshold:"))
-        self.text_area.insert(tk.END, f"Products with stock lower than {threshold}:\n")
-        self.reports.low_stock_report(threshold)
+        try:
+            self.text_area.delete(1.0, tk.END)
+            threshold_input = simpledialog.askstring("Low Stock Report", "Enter stock threshold:")
+
+            if threshold_input is None:  # User pressed cancel
+                return
+
+            threshold = int(threshold_input)
+
+            if threshold < 0:
+                raise ValueError("Stock threshold must be a positive integer.")
+
+            self.text_area.insert(tk.END, f"Products with stock lower than {threshold}:\n")
+            self.reports.low_stock_report(threshold)
+
+        except ValueError:
+            messagebox.showerror("Invalid Input", "Please enter a valid positive integer for stock threshold.")
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred: {e}")
 
 if __name__ == "__main__":
     root = tk.Tk()

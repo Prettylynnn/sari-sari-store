@@ -2,8 +2,8 @@ import sqlite3
 
 class Inventory:
     def __init__(self, db_name='data/store.db'):
-        self.conn = sqlite3.connect(db_name)
-        self.create_table()
+        self.conn = sqlite3.connect(db_name, check_same_thread=False)
+        self.create_table() 
 
     def create_table(self):
         with self.conn:

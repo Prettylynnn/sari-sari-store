@@ -3,7 +3,7 @@ from datetime import datetime
 
 class Sales:
     def __init__(self, inventory, db_name='data/store.db'):
-        self.conn = sqlite3.connect(db_name)
+        self.conn = sqlite3.connect(db_name, check_same_thread=False)
         self.inventory = inventory
         self.create_sales_table()
 

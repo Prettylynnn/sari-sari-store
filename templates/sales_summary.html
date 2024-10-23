@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Summary</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #00adb5;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .back-btn {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .back-btn a {
+            background-color: #00adb5;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .back-btn a:hover {
+            background-color: #007a82;
+        }
+
+        .alert {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        .alert.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .alert.danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <h2>Sales Summary</h2>
+
+        <p>Total Sales: ${{ total_sales }}</p> <!-- Total sales amount -->
+        
+        {% if sales_data %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sale ID</th>
+                        <th>Product ID</th>
+                        <th>Name</th>
+                        <th>Quantity</th>
+                        <th>Total Price</th>
+                        <th>Sale Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sale in sales_data %}
+                    <tr>
+                        <td>{{ sale[0] }}</td> <!-- Sale ID -->
+                        <td>{{ sale[1] }}</td> <!-- Product ID -->
+                        <td>{{ sale[2] }}</td> <!-- Name -->
+                        <td>{{ sale[3] }}</td> <!-- Quantity -->
+                        <td>${{ sale[4] }}</td> <!-- Total Price -->
+                        <td>{{ sale[5] }}</td> <!-- Sale Date -->
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No sales records found for the specified date range.</p>
+        {% endif %}
+
+        <div class="back-btn">
+            <a href="/">Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>

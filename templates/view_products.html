@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Products</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+      }
+      .container {
+        width: 80%;
+        margin: auto;
+        padding: 20px;
+        background-color: white;
+        border-radius: 10px;
+      }
+      h2 {
+        color: #333;
+        text-align: center;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+      }
+      table,
+      th,
+      td {
+        border: 1px solid #ddd;
+      }
+      th,
+      td {
+        padding: 12px;
+        text-align: left;
+      }
+      th {
+        background-color: #00adb5;
+        color: white;
+      }
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+      a {
+        color: #00adb5;
+        text-decoration: none;
+        font-size: 14px;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .back-btn {
+        text-align: center;
+        margin: 20px 0;
+      }
+      .back-btn a {
+        background-color: #00adb5;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+      }
+      .back-btn a:hover {
+        background-color: #007a82;
+      }
+
+      .alert {
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+      }
+      .alert.success {
+        background-color: #d4edda;
+        color: #155724;
+      }
+      .alert.danger {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, message in messages %}
+      <div class="alert {{ category }}">{{ message }}</div>
+      {% endfor %} {% endif %} {% endwith %}
+      <h2>Product List</h2>
+
+      {% if products %}
+      <table>
+        <thead>
+          <tr>
+            <th>Product ID</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Stock</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for product_id, product in products.items() %}
+          <tr>
+            <td>{{ product_id }}</td>
+            <td>{{ product['name'] }}</td>
+            <td>{{ product['category'] }}</td>
+            <td>${{ product['price'] }}</td>
+            <td>{{ product['stock'] }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No products available.</p>
+      {% endif %}
+
+      <div class="back-btn">
+        <a href="/">Back to Home</a>
+      </div>
+    </div>
+  </body>
+</html>

@@ -4,70 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sari Sari Store Management System</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 0;
+            background-color: #f8f9fa;
         }
-        .container {
-            width: 80%;
-            margin: auto;
+        .header {
+            background-color: #007bff;
+            color: white;
             padding: 20px;
-        }
-        h1 {
             text-align: center;
-            color: #333;
         }
         .menu {
             display: flex;
-            justify-content: space-around;
-            margin-top: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
         }
         .menu a {
-            background-color: #00adb5;
+            flex: 1 1 200px;
+            margin: 10px;
+            padding: 15px;
+            text-align: center;
             color: white;
-            padding: 10px 20px;
-            text-decoration: none;
+            background-color: #17a2b8;
             border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
         }
         .menu a:hover {
-            background-color: #007a82;
-        }
-
-        .alert {
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-        }
-        .alert.success {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        .alert.danger {
-            background-color: #f8d7da;
-            color: #721c24;
+            background-color: #138496;
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="header">
+        <h1>Welcome to Sari Sari Store Management System</h1>
+    </div>
+    
+    <div class="container my-4">
+        <!-- Flash Messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
-                <div class="alert {{ category }}">{{ message }}</div>
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
             {% endfor %}
         {% endif %}
-    {% endwith %}
-        <h1>Welcome to Inventory Management System</h1>
+        {% endwith %}
+
+        <!-- Navigation Menu -->
         <div class="menu">
-            <a href="/view-products">View Products</a>
-            <a href="/add-product">Add Product</a>
-            <a href="/record-sale">Record Sale</a>
-            <a href="/sales-summary">Sales Summary</a>
-            <a href="/low-stock">Low Stock Report</a>
+            <a href="/view-products" class="btn btn-info">View Products</a>
+            <a href="/add-product" class="btn btn-info">Add Product</a>
+            <a href="/record-sale" class="btn btn-info">Record Sale</a>
+            <a href="/sales-summary" class="btn btn-info">Sales Summary</a>
+            <a href="/low-stock" class="btn btn-info">Low Stock Report</a>
+            <a href="/top-selling" class="btn btn-info">Top Selling Products</a>
+            <a href="/profit-report" class="btn btn-info">Profit Report</a>
+            <a href="/sales-chart" class="btn btn-info">Monthly Sales Chart</a>
         </div>
     </div>
+
+    <!-- JavaScript for Bootstrap functionality -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

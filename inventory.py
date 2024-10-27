@@ -13,9 +13,11 @@ class Inventory:
                 name TEXT,
                 category TEXT,
                 price REAL,
+                cost REAL,  
                 stock INTEGER
             )
             ''')
+
 
     def load_inventory(self):
         cursor = self.conn.execute('SELECT * FROM products')

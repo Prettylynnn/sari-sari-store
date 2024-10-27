@@ -121,6 +121,26 @@ def low_stock():
 
     return render_template('low_stock_form.html')
 
+
+@app.route('/top-selling')
+@login_required
+def top_selling():
+    top_products = reports.top_selling_products()
+    return render_template('top_selling.html', products=top_products)
+
+@app.route('/profit-report')
+@login_required
+def profit_report():
+    profit_data = reports.calculate_profit()
+    return render_template('profit_report.html', profits=profit_data)
+
+@app.route('/sales-chart')
+@login_required
+def sales_chart():
+    reports.sales_chart(period='monthly')
+    flash("Monthly sales chart generated successfully!", "success")
+    return redirect(url_for('home'))
+
 @login_manager.user_loader
 def load_user(user_id):
     db = get_db()

@@ -57,38 +57,51 @@ class Reports:
     # Profit margin
     def calculate_profit(self):
         cursor = self.conn.execute('''
-            SELECT p.name, p.price, p.cost, SUM(s.quantity) as total_quantity
+            SELECT p.name AS product_name, 
+                IFNULL(p.price, 0) AS selling_price, 
+                IFNULL(p.cost, 0) AS cost_price, 
+                IFNULL(SUM(s.quantity), 0) as total_quantity
             FROM products p
             JOIN sales s ON p.product_id = s.product_id
             GROUP BY p.product_id
         ''')
+
         profit_data = []
         for row in cursor:
-            selling_price, cost, quantity = row[1], row[2], row[3]
-            # Check if selling_price and cost are not None
-            if selling_price is not None and cost is not None and quantity is not None:
-                profit = (selling_price - cost) * quantity
-                profit_data.append({"name": row[0], "profit": profit})
-            else:
-                profit_data.append({"name": row[0], "profit": "N/A (Incomplete data)"})
+            product_name = row['product_name']
+            selling_price = row['selling_price']
+            cost_price = row['cost_price']
+            quantity = row['total_quantity']
+
+            # Calculate profit if all values are valid
+            profit = (selling_price - cost_price) * quantity
+            profit_data.append({"name": product_name, "profit": profit})
+
         return profit_data
 
     # Monthly/Quarterly Sales Graph
     def sales_chart(self, period='monthly'):
+        # Adjust query based on period type
+        date_format = '%Y-%m' if period == 'monthly' else '%Y-Q'
         cursor = self.conn.execute('''
-            SELECT strftime('%Y-%m', sale_date) as sale_period, SUM(total_price) as total_sales
+            SELECT strftime(?, sale_date) as sale_period, SUM(total_price) as total_sales
             FROM sales
             GROUP BY sale_period
-        ''')
-        
-        periods, sales = zip(*cursor.fetchall())
-        
+        ''', (date_format,))
+
+        results = cursor.fetchall()
+        if not results:
+            print("No sales data available for the selected period.")
+            return
+
+        periods, sales = zip(*results)
+
         # Plotting sales chart
         plt.figure(figsize=(10, 6))
-        plt.bar(periods, sales)
+        plt.bar(periods, sales, color='skyblue')
         plt.xlabel("Period")
         plt.ylabel("Total Sales")
         plt.title(f"{period.capitalize()} Sales Chart")
-        plt.xticks(rotation=45)
+        plt.xticks(rotation=45, ha='right')  # Improved rotation and alignment for readability
         plt.tight_layout()
         plt.show()
